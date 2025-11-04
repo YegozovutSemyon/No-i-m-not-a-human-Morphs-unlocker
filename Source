@@ -34,11 +34,13 @@ local Window = Rayfield:CreateWindow({
 })
 
 local PlayerTab = Window:CreateTab("UPDATE LOGS / INFO", "square-pen")
-local PlyerParagraph = PlayerTab:CreateParagraph({Title = "LAST UPDATE", Content = "11/01/2025"})
+local PlyerParagraph = PlayerTab:CreateParagraph({Title = "LAST UPDATE 📃", Content = "11/04/2025"})
+local PlyerParagraph = PlayerTab:CreateParagraph({Title = "WHAT'S NEW? ✨", Content = "ADDED VIGILANTE / ADDED ROLES TAG FOR PLAYERS / ADDED Ability to Get CASH / ADDED CHOOSE ROLE"})
 local Label = PlayerTab:CreateLabel("Semyon", "user-round-cog")
 local Label = PlayerTab:CreateLabel("Rayfield UI", "paint-roller")
 
-local PlayerTab = Window:CreateTab("FEMA", "flame")
+
+local PlayerTab = Window:CreateTab("Paid Morphs", "bolt")
 local Button = PlayerTab:CreateButton({
    Name = "Equip FEMA Morph",
    Callback = function()
@@ -46,6 +48,162 @@ local Button = PlayerTab:CreateButton({
    game.ReplicatedStorage.EventsFolder.SetFemaRole:FireServer()
 
    end,
+})
+local Button = PlayerTab:CreateButton({
+   Name = "Equip Vigilante Morph",
+   Callback = function()
+   game.ReplicatedStorage.EventsFolder.SetMorph:FireServer("Striker")
+game.ReplicatedStorage.EventsFolder.SetStrikerRole:FireServer()
+
+   end,
+})
+local PlyerParagraph = PlayerTab:CreateParagraph({Title = "⚠️⚠️⚠️", Content = "MAKE SURE TO RESET IF YOU WANNA SET ONE OF THOSE MORPHS"})
+local PlyerParagraph = PlayerTab:CreateParagraph({Title = "⚠️⚠️⚠️", Content = "MAKE SURE TO BE A -VISITOR/SURVIVOR- FOR THIS TO WORK"})
+
+local PlayerTab = Window:CreateTab("Force Roles", "square-stack")
+local Button = PlayerTab:CreateButton({
+   Name = "Force Character Role",
+   Callback = function()
+   game.Players.LocalPlayer.Character:BreakJoints()
+for i = 1, 12 do
+local player = game.Players.LocalPlayer
+
+
+    player.ChoosingRole.Value = "Character"
+    player.PlayerRole.Value = "Character"
+    game:GetService("ReplicatedStorage").EventsFolder.SetRoleByChoosingPass:FireServer("Character")
+    wait(0.1) 
+end
+   end,
+})
+local Button = PlayerTab:CreateButton({
+   Name = "Force Visitor Role",
+   Callback = function()
+   game.Players.LocalPlayer.Character:BreakJoints()
+for i = 1, 12 do
+local player = game.Players.LocalPlayer
+
+
+    player.ChoosingRole.Value = "Visitor"
+    player.PlayerRole.Value = "Visitor"
+    game:GetService("ReplicatedStorage").EventsFolder.SetRoleByChoosingPass:FireServer("Visitor")
+    wait(0.1) 
+end
+   end,
+})
+local Button = PlayerTab:CreateButton({
+   Name = "Force Survivor Role",
+   Callback = function()
+    game.Players.LocalPlayer.Character:BreakJoints()
+for i = 1, 12 do
+local player = game.Players.LocalPlayer
+
+
+    player.ChoosingRole.Value = "Survivor"
+    player.PlayerRole.Value = "Survivor"
+    game:GetService("ReplicatedStorage").EventsFolder.SetRoleByChoosingPass:FireServer("Survivor")
+    wait(0.1) 
+end
+   end,
+})
+
+local PlayerTab = Window:CreateTab("Show Players Roles", "eye")
+local Button = PlayerTab:CreateButton({
+ Name = "Show Roles",
+   Callback = function()
+   local Players = game:GetService("Players")
+
+local vipLabel = workspace:GetChildren()[272].HumanoidRootPart.VIPLabel
+local vipTextLabel = vipLabel:FindFirstChildWhichIsA("TextLabel")
+
+local roleColors = {
+    Character = Color3.fromRGB(0, 0, 255),
+    Survivor = Color3.fromRGB(0, 255, 0),
+    Visitor = Color3.fromRGB(255, 0, 0)
+}
+
+local function createRoleLabel(player)
+    if player.Character and player.Character:FindFirstChild("Head") then
+        for _, obj in pairs(player.Character:GetDescendants()) do
+            if obj.Name == "RoleLabel" then
+                obj:Destroy()
+            end
+        end
+        
+        local billboard = Instance.new("BillboardGui")
+        billboard.Name = "RoleLabel"
+        billboard.Adornee = player.Character.Head
+        billboard.Size = vipLabel.Size
+        billboard.StudsOffset = vipLabel.StudsOffset
+        billboard.AlwaysOnTop = vipLabel.AlwaysOnTop
+        billboard.Active = vipLabel.Active
+        billboard.ClipsDescendants = vipLabel.ClipsDescendants
+        billboard.LightInfluence = vipLabel.LightInfluence
+        billboard.MaxDistance = vipLabel.MaxDistance
+        billboard.SizeOffset = vipLabel.SizeOffset
+        
+        local label = Instance.new("TextLabel")
+        label.Size = vipTextLabel.Size
+        label.Position = vipTextLabel.Position
+        label.AnchorPoint = vipTextLabel.AnchorPoint
+        label.Text = player.PlayerRole.Value
+        label.TextColor3 = roleColors[player.PlayerRole.Value] or vipTextLabel.TextColor3
+        label.BackgroundColor3 = vipTextLabel.BackgroundColor3
+        label.BackgroundTransparency = vipTextLabel.BackgroundTransparency
+        label.BorderColor3 = vipTextLabel.BorderColor3
+        label.BorderSizePixel = vipTextLabel.BorderSizePixel
+        label.TextSize = vipTextLabel.TextSize
+        label.TextScaled = vipTextLabel.TextScaled
+        label.TextWrapped = vipTextLabel.TextWrapped
+        label.Font = vipTextLabel.Font
+        label.TextStrokeColor3 = vipTextLabel.TextStrokeColor3
+        label.TextStrokeTransparency = vipTextLabel.TextStrokeTransparency
+        label.Parent = billboard
+        
+        billboard.Parent = player.Character.Head
+    end
+end
+
+for _, player in pairs(Players:GetPlayers()) do
+    if player ~= Players.LocalPlayer then
+        createRoleLabel(player)
+        player.PlayerRole.Changed:Connect(function()
+            createRoleLabel(player)
+        end)
+        player.CharacterAdded:Connect(function()
+            wait(1)
+            createRoleLabel(player)
+        end)
+    end
+end
+
+Players.PlayerAdded:Connect(function(player)
+    if player ~= Players.LocalPlayer then
+        player.CharacterAdded:Connect(function()
+            wait(1)
+            createRoleLabel(player)
+        end)
+        player.PlayerRole.Changed:Connect(function()
+            createRoleLabel(player)
+        end)
+    end
+end)
+
+ end,
+})
+
+local PlayerTab = Window:CreateTab("Cash", "circle-dollar-sign")
+local Button = PlayerTab:CreateButton({
+ Name = "Get Some Cash!",
+   Callback = function()
+
+    local ReplicatedStorage = game:GetService("ReplicatedStorage")
+    for i = 1, 100 do
+    ReplicatedStorage.EventsFolder.GetCashRewards:FireServer(90, 100) 
+    wait(0.1)
+end
+
+ end,
 })
 
 local PlayerTab = Window:CreateTab("Unlock All Morphs", "lock-keyhole-open")
